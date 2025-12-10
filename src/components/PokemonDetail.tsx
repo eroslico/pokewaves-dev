@@ -2,12 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 import { Pokemon } from '@/types/pokemon';
 import { pokemonApi } from '@/lib/pokeapi';
 import { TypeBadge } from './TypeBadge';
+import { StatsChart } from './StatsChart';
 import { formatPokemonId, formatStatName, getStatColor, calculateStatPercentage, typeGradients } from '@/lib/pokemon-utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Ruler, Weight, Zap } from 'lucide-react';
+import { Loader2, Ruler, Weight, Zap, BarChart3 } from 'lucide-react';
 
 interface PokemonDetailProps {
   pokemon: Pokemon;
@@ -102,8 +103,12 @@ export const PokemonDetail = ({ pokemon, isOpen, onClose }: PokemonDetailProps) 
                 </div>
 
                 <Tabs defaultValue="stats" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3">
+                  <TabsList className="grid w-full grid-cols-4">
                     <TabsTrigger value="stats">Stats</TabsTrigger>
+                    <TabsTrigger value="visual">
+                      <BarChart3 className="w-4 h-4 mr-1" />
+                      Visual
+                    </TabsTrigger>
                     <TabsTrigger value="abilities">Abilities</TabsTrigger>
                     <TabsTrigger value="moves">Moves</TabsTrigger>
                   </TabsList>
@@ -141,6 +146,12 @@ export const PokemonDetail = ({ pokemon, isOpen, onClose }: PokemonDetailProps) 
                           {pokemon.stats.reduce((sum, stat) => sum + stat.base_stat, 0)}
                         </span>
                       </div>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="visual" className="mt-4">
+                    <div className="flex justify-center py-6">
+                      <StatsChart pokemon={pokemon} size="lg" />
                     </div>
                   </TabsContent>
 

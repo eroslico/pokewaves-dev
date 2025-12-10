@@ -9,14 +9,19 @@ A modern and elegant web application to explore the world of Pokémon. Built wit
 
 ## ✨ Features
 
-- 🔍 **Advanced Search**: Search Pokémon by name or number
-- 🎨 **Type Filters**: Explore Pokémon by elemental type
-- 📱 **Responsive Design**: Optimized for all devices
+- 🔍 **Advanced Search**: Search Pokémon by name or number with instant results
+- 🎨 **Type Filters**: Explore Pokémon by elemental type with beautiful badges
+- 🌟 **Generation Filter**: Filter Pokémon by generation (Gen 1-9)
+- ❤️ **Favorites System**: Save your favorite Pokémon with persistent storage
+- 📱 **Responsive Design**: Optimized for all devices from mobile to desktop
 - 🌙 **Dark Mode**: Light and dark themes with smooth transitions
-- ⚡ **Fast Loading**: Optimized with React Query for better performance
+- 👁️ **View Modes**: Switch between grid and list views for different browsing experiences
+- ⚡ **Fast Loading**: Optimized with React Query for better performance and caching
 - 🎯 **Modern UI**: Sleek design with shadcn/ui and Tailwind CSS
-- 📊 **Comprehensive Details**: Detailed information for each Pokémon
-- 🎭 **Smooth Animations**: Attractive transitions and visual effects
+- 📊 **Comprehensive Details**: Detailed information for each Pokémon with stats visualization
+- 🎭 **Smooth Animations**: Attractive transitions and visual effects throughout
+- 🔄 **Pokemon Comparison**: Compare up to 3 Pokémon side-by-side (coming soon)
+- 💾 **Persistent Preferences**: Your settings and favorites are saved locally
 
 ## 🚀 Technologies Used
 

@@ -1,29 +1,13 @@
-import { PokemonType } from '@/types/pokemon';
-import { TypeBadge } from './TypeBadge';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
-
-const allTypes: PokemonType[] = [
-  'normal',
-  'fire',
-  'water',
-  'electric',
-  'grass',
-  'ice',
-  'fighting',
-  'poison',
-  'ground',
-  'flying',
-  'psychic',
-  'bug',
-  'rock',
-  'ghost',
-  'dragon',
-  'dark',
-  'steel',
-  'fairy',
-];
+import { Filter, X, ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 
 interface TypeFilterProps {
   selectedTypes: string[];
@@ -31,43 +15,99 @@ interface TypeFilterProps {
   onClear: () => void;
 }
 
+const POKEMON_TYPES = [
+  { name: 'normal', color: 'hsl(var(--type-normal))' },
+  { name: 'fire', color: 'hsl(var(--type-fire))' },
+  { name: 'water', color: 'hsl(var(--type-water))' },
+  { name: 'electric', color: 'hsl(var(--type-electric))' },
+  { name: 'grass', color: 'hsl(var(--type-grass))' },
+  { name: 'ice', color: 'hsl(var(--type-ice))' },
+  { name: 'fighting', color: 'hsl(var(--type-fighting))' },
+  { name: 'poison', color: 'hsl(var(--type-poison))' },
+  { name: 'ground', color: 'hsl(var(--type-ground))' },
+  { name: 'flying', color: 'hsl(var(--type-flying))' },
+  { name: 'psychic', color: 'hsl(var(--type-psychic))' },
+  { name: 'bug', color: 'hsl(var(--type-bug))' },
+  { name: 'rock', color: 'hsl(var(--type-rock))' },
+  { name: 'ghost', color: 'hsl(var(--type-ghost))' },
+  { name: 'dragon', color: 'hsl(var(--type-dragon))' },
+  { name: 'dark', color: 'hsl(var(--type-dark))' },
+  { name: 'steel', color: 'hsl(var(--type-steel))' },
+  { name: 'fairy', color: 'hsl(var(--type-fairy))' },
+];
+
 export const TypeFilter = ({ selectedTypes, onTypeToggle, onClear }: TypeFilterProps) => {
+  const [isOpen, setIsOpen] = useState(true);
+
   return (
-    <div className="w-full glass-strong rounded-2xl p-4 shadow-md">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-display font-semibold text-foreground flex items-center gap-2">
-          <span className="w-1 h-4 bg-gradient-to-b from-primary to-accent rounded-full" />
-          Filter by Type
-        </h3>
-        {selectedTypes.length > 0 && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClear}
-            className="h-8 text-xs hover-lift rounded-full"
-          >
-            <X className="w-3 h-3 mr-1" />
-            Clear
-          </Button>
-        )}
-      </div>
-      <ScrollArea className="w-full">
-        <div className="flex gap-2 pb-2">
-          {allTypes.map((type) => (
-            <button
-              key={type}
-              onClick={() => onTypeToggle(type)}
-              className={`transition-all duration-500 ${
-                selectedTypes.includes(type)
-                  ? 'scale-110 ring-2 ring-primary ring-offset-2 ring-offset-background'
-                  : 'opacity-60 hover:opacity-100 hover:scale-105'
-              }`}
-            >
-              <TypeBadge type={type} size="md" />
-            </button>
-          ))}
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <div className="glass-strong rounded-2xl p-4 shadow-md">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-primary" />
+            <h3 className="font-semibold text-sm">Type Filter</h3>
+            {selectedTypes.length > 0 && (
+              <Badge variant="secondary" className="ml-2">
+                {selectedTypes.length}
+              </Badge>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {selectedTypes.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onClear}
+                className="h-7 text-xs hover:text-destructive"
+              >
+                <X className="w-3 h-3 mr-1" />
+                Clear
+              </Button>
+            )}
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                <ChevronDown className={cn(
+                  "w-4 h-4 transition-transform duration-300",
+                  isOpen && "rotate-180"
+                )} />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
         </div>
-      </ScrollArea>
-    </div>
+
+        <CollapsibleContent className="space-y-0">
+          <div className="flex flex-wrap gap-2">
+            {POKEMON_TYPES.map((type) => {
+              const isSelected = selectedTypes.includes(type.name);
+              return (
+                <Badge
+                  key={type.name}
+                  variant={isSelected ? 'default' : 'outline'}
+                  className={cn(
+                    'cursor-pointer transition-all duration-300 hover:scale-105 capitalize',
+                    isSelected && 'shadow-md ring-2 ring-primary/50'
+                  )}
+                  style={
+                    isSelected
+                      ? {
+                          backgroundColor: type.color,
+                          borderColor: type.color,
+                          color: 'white',
+                        }
+                      : {
+                          borderColor: type.color,
+                          color: type.color,
+                        }
+                  }
+                  onClick={() => onTypeToggle(type.name)}
+                >
+                  {type.name}
+                </Badge>
+              );
+            })}
+          </div>
+        </CollapsibleContent>
+      </div>
+    </Collapsible>
   );
 };

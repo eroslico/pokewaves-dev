@@ -3,32 +3,25 @@ import { TypeBadge } from './TypeBadge';
 import { formatPokemonId, typeGradients } from '@/lib/pokemon-utils';
 import { Card } from '@/components/ui/card';
 import { Heart } from 'lucide-react';
-import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { useLazyImage } from '@/hooks/useLazyImage';
 
 interface PokemonCardProps {
   pokemon: Pokemon;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
+  isFavorite: boolean;
+  onToggleFavorite: (e: React.MouseEvent) => void;
 }
 
-export const PokemonCard = ({ pokemon, onClick }: PokemonCardProps) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+export const PokemonCard = ({ pokemon, onClick, isFavorite, onToggleFavorite }: PokemonCardProps) => {
   const primaryType = pokemon.types[0].type.name;
   const gradient = typeGradients[primaryType as keyof typeof typeGradients];
-
-  const toggleFavorite = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsFavorite(!isFavorite);
-    // Save to localStorage
-    const favorites = JSON.parse(localStorage.getItem('pokemonFavorites') || '[]');
-    if (!isFavorite) {
-      favorites.push(pokemon.id);
-    } else {
-      const index = favorites.indexOf(pokemon.id);
-      if (index > -1) favorites.splice(index, 1);
-    }
-    localStorage.setItem('pokemonFavorites', JSON.stringify(favorites));
-  };
+  
+  const imageUrl = pokemon.sprites.other['official-artwork'].front_default || pokemon.sprites.front_default;
+  const { imgRef, imageSrc, isLoaded } = useLazyImage({ 
+    src: imageUrl,
+    placeholder: '/placeholder-pokemon.png' 
+  });
 
   return (
     <Card
@@ -54,7 +47,7 @@ export const PokemonCard = ({ pokemon, onClick }: PokemonCardProps) => {
 
       {/* Favorite Button */}
       <button
-        onClick={toggleFavorite}
+        onClick={onToggleFavorite}
         className={cn(
           'absolute top-3 right-3 z-10 p-2 rounded-full transition-all duration-500',
           'glass-strong shadow-md hover:scale-110 hover:rotate-12',
@@ -81,9 +74,15 @@ export const PokemonCard = ({ pokemon, onClick }: PokemonCardProps) => {
                style={{ backgroundColor: typeGradients[primaryType as keyof typeof typeGradients].split(',')[0].replace('linear-gradient(135deg,', '').trim() }} />
           
           <img
-            src={pokemon.sprites.other['official-artwork'].front_default || pokemon.sprites.front_default}
+            ref={imgRef}
+            src={imageSrc || imageUrl}
             alt={pokemon.name}
-            className="relative w-full h-full object-contain drop-shadow-2xl transition-all duration-500 group-hover:scale-125 group-hover:drop-shadow-[0_25px_40px_rgba(0,0,0,0.4)] group-hover:rotate-3 animate-float"
+            className={cn(
+              "relative w-full h-full object-contain drop-shadow-2xl transition-all duration-500",
+              "group-hover:scale-125 group-hover:drop-shadow-[0_25px_40px_rgba(0,0,0,0.4)] group-hover:rotate-3 animate-float",
+              !isLoaded && "opacity-0",
+              isLoaded && "opacity-100 animate-fade-in"
+            )}
             loading="lazy"
           />
         </div>
